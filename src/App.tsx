@@ -304,140 +304,142 @@ Réponse:`;
             </div>
           </div>
 
-          
-
-        {/* Chat Container */}
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          {/* Messages */}
-          <div className="h-96 overflow-y-auto p-6 space-y-4 bg-gray-50">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  msg.sender === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
+          {/* Chat Container */}
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            {/* Messages */}
+            <div className="h-96 overflow-y-auto p-6 space-y-4 bg-gray-50">
+              {messages.map((msg, index) => (
                 <div
-                  className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-                    msg.sender === "user"
-                      ? "bg-blue-500 text-white"
-                      : msg.isEmergency
-                      ? "bg-red-100 border-l-4 border-red-500 text-red-800"
-                      : "bg-white border border-gray-200 text-gray-800"
+                  key={index}
+                  className={`flex ${
+                    msg.sender === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
-                  {msg.sender === "assistant" && msg.isEmergency && (
-                    <div className="flex items-center space-x-2 mb-2">
-                      <AlertTriangle className="w-5 h-5 text-red-600" />
-                      <span className="font-semibold text-red-600">
-                        URGENCE VITALE
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="whitespace-pre-line text-sm">{msg.text}</div>
-
-                  <div className="flex items-center justify-between mt-2">
-                    <div
-                      className={`text-xs ${
-                        msg.sender === "user"
-                          ? "text-blue-200"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      <Clock className="w-3 h-3 inline mr-1" />
-                      {msg.timestamp.toLocaleTimeString()}
-                    </div>
-
-                    {msg.sender === "assistant" && msg.source && (
-                      <div className="flex items-center space-x-1 text-xs text-gray-500">
-                        {getSourceIcon(msg.source)}
-                        <span>{getSourceLabel(msg.source)}</span>
+                  <div
+                    className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
+                      msg.sender === "user"
+                        ? "bg-blue-500 text-white"
+                        : msg.isEmergency
+                        ? "bg-red-100 border-l-4 border-red-500 text-red-800"
+                        : "bg-white border border-gray-200 text-gray-800"
+                    }`}
+                  >
+                    {msg.sender === "assistant" && msg.isEmergency && (
+                      <div className="flex items-center space-x-2 mb-2">
+                        <AlertTriangle className="w-5 h-5 text-red-600" />
+                        <span className="font-semibold text-red-600">
+                          URGENCE VITALE
+                        </span>
                       </div>
                     )}
+
+                    <div className="whitespace-pre-line text-sm">
+                      {msg.text}
+                    </div>
+
+                    <div className="flex items-center justify-between mt-2">
+                      <div
+                        className={`text-xs ${
+                          msg.sender === "user"
+                            ? "text-blue-200"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        <Clock className="w-3 h-3 inline mr-1" />
+                        {msg.timestamp.toLocaleTimeString()}
+                      </div>
+
+                      {msg.sender === "assistant" && msg.source && (
+                        <div className="flex items-center space-x-1 text-xs text-gray-500">
+                          {getSourceIcon(msg.source)}
+                          <span>{getSourceLabel(msg.source)}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-white border border-gray-200 px-4 py-3 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
-                    <span className="text-gray-600">
-                      {HF_API_KEY
-                        ? "IA médicale en analyse..."
-                        : "Analyse en cours..."}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input Area */}
-          <div className="p-6 bg-white border-t">
-            <div className="flex space-x-4">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Décrivez la situation d'urgence ou posez une question médicale..."
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                onKeyPress={(e) =>
-                  e.key === "Enter" && !isLoading && handleSend()
-                }
-                disabled={isLoading}
-              />
-              <button
-                onClick={handleSend}
-                disabled={isLoading || !input.trim()}
-                className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold flex items-center space-x-2 transition-colors"
-              >
-                <Send className="w-5 h-5" />
-                <span>Envoyer</span>
-              </button>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {[
-                "Une personne s'étouffe",
-                "Saignement abondant",
-                "Perte de conscience",
-                "Douleur à la poitrine",
-                "Brûlure importante",
-                "Que faire en cas de fracture ?",
-                "Comment reconnaître un AVC ?",
-              ].map((suggestion, index) => (
-                <button
-                  key={index}
-                  onClick={() => setInput(suggestion)}
-                  className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm transition-colors"
-                >
-                  {suggestion}
-                </button>
               ))}
+
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-white border border-gray-200 px-4 py-3 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+                      <span className="text-gray-600">
+                        {HF_API_KEY
+                          ? "IA médicale en analyse..."
+                          : "Analyse en cours..."}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Area */}
+            <div className="p-6 bg-white border-t">
+              <div className="flex space-x-4">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Décrivez la situation d'urgence ou posez une question médicale..."
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && !isLoading && handleSend()
+                  }
+                  disabled={isLoading}
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={isLoading || !input.trim()}
+                  className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold flex items-center space-x-2 transition-colors"
+                >
+                  <Send className="w-5 h-5" />
+                  <span>Envoyer</span>
+                </button>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {[
+                  "Une personne s'étouffe",
+                  "Saignement abondant",
+                  "Perte de conscience",
+                  "Douleur à la poitrine",
+                  "Brûlure importante",
+                  "Que faire en cas de fracture ?",
+                  "Comment reconnaître un AVC ?",
+                ].map((suggestion, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setInput(suggestion)}
+                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm transition-colors"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Disclaimer */}
-        <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <div className="flex items-center space-x-2">
-            <Shield className="w-5 h-5 text-yellow-600" />
-            <span className="font-semibold text-yellow-800">
-              Avertissement Important
-            </span>
+          {/* Disclaimer */}
+          <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <Shield className="w-5 h-5 text-yellow-600" />
+              <span className="font-semibold text-yellow-800">
+                Avertissement Important
+              </span>
+            </div>
+            <p className="text-yellow-700 text-sm mt-2">
+              Cet assistant ne remplace pas un avis médical professionnel. En
+              cas d'urgence vitale, composez immédiatement le 18 (Pompiers). Les
+              conseils fournis par l'IA MedAlpaca sont basés sur l'apprentissage
+              automatique et doivent être confirmés par un professionnel de
+              santé.
+            </p>
           </div>
-          <p className="text-yellow-700 text-sm mt-2">
-            Cet assistant ne remplace pas un avis médical professionnel. En cas
-            d'urgence vitale, composez immédiatement le 18 (Pompiers). Les
-            conseils fournis par l'IA MedAlpaca sont basés sur l'apprentissage
-            automatique et doivent être confirmés par un professionnel de santé.
-          </p>
         </div>
       </div>
     </div>
