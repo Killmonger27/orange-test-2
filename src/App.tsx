@@ -12,7 +12,15 @@ import {
 } from "lucide-react";
 
 const AssistantPremiersSecours = () => {
-  const [messages, setMessages] = useState([
+  type Message = {
+    sender: string;
+    text: string;
+    timestamp: Date;
+    isEmergency?: boolean;
+    source?: string;
+  };
+
+  const [messages, setMessages] = useState<Message[]>([
     {
       sender: "assistant",
       text: "🚨 Assistant de premiers secours activé avec IA médicale MedAlpaca.\n\nVous pouvez :\n• Décrire une situation d'urgence pour des conseils immédiats\n• Poser des questions médicales générales\n• Utiliser les suggestions rapides ci-dessous\n\nEn cas d'urgence vitale immédiate, appelez le  18 !",
@@ -213,6 +221,7 @@ Réponse:`;
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       const errorMessage = {
         sender: "assistant",
